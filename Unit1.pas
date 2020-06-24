@@ -222,9 +222,6 @@ begin
     end;
 End;
 
-//------------------------------------------------------------------------------
-//                         OmniRig event handling
-//------------------------------------------------------------------------------
 procedure TForm1.ParamsChangeEvent(Sender: TObject; RigNumber,  Params: Integer);
 begin
    if OmniRig = nil then Exit;
