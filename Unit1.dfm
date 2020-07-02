@@ -4,7 +4,7 @@ object Form1: TForm1
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'CW Skimmer Companion v 0.1'
-  ClientHeight = 392
+  ClientHeight = 402
   ClientWidth = 468
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -18,40 +18,40 @@ object Form1: TForm1
   OnCreate = FormCreate
   DesignSize = (
     468
-    392)
+    402)
   PixelsPerInch = 96
   TextHeight = 13
   object Label11: TLabel
     Left = 8
-    Top = 149
+    Top = 157
     Width = 83
     Height = 13
     Caption = 'Telnet messages:'
   end
   object Label12: TLabel
     Left = 205
-    Top = 341
+    Top = 349
     Width = 39
     Height = 13
     Caption = 'Callsign:'
   end
   object Label13: TLabel
     Left = 8
-    Top = 340
+    Top = 348
     Width = 65
     Height = 13
     Caption = 'Telnet server:'
   end
   object Label14: TLabel
     Left = 104
-    Top = 340
+    Top = 348
     Width = 54
     Height = 13
     Caption = 'Telnet port:'
   end
   object Bevel2: TBevel
     Left = 187
-    Top = 358
+    Top = 365
     Width = 12
     Height = 26
     Anchors = []
@@ -59,7 +59,7 @@ object Form1: TForm1
   end
   object errLabel1: TLabel
     Left = 97
-    Top = 149
+    Top = 157
     Width = 184
     Height = 13
     Caption = 'Error while connecting to CW Skimmer!'
@@ -73,7 +73,7 @@ object Form1: TForm1
   end
   object TelnetMemo1: TMemo
     Left = 8
-    Top = 168
+    Top = 176
     Width = 452
     Height = 163
     Lines.Strings = (
@@ -83,7 +83,7 @@ object Form1: TForm1
   end
   object btnConnect: TButton
     Left = 301
-    Top = 356
+    Top = 364
     Width = 159
     Height = 25
     Caption = 'Connect to CW Skimmer'
@@ -94,12 +94,12 @@ object Form1: TForm1
     Left = 8
     Top = 8
     Width = 452
-    Height = 129
+    Height = 145
     Caption = 'RIG #1'
     TabOrder = 2
     DesignSize = (
       452
-      129)
+      145)
     object Label1: TLabel
       Left = 228
       Top = 39
@@ -201,21 +201,12 @@ object Form1: TForm1
       ParentFont = False
     end
     object Bevel1: TBevel
-      Left = 20
-      Top = 67
-      Width = 413
-      Height = 17
+      Left = 16
+      Top = 76
+      Width = 418
+      Height = 12
       Anchors = []
       Shape = bsBottomLine
-      ExplicitLeft = 15
-      ExplicitTop = 70
-    end
-    object Label15: TLabel
-      Left = 12
-      Top = 98
-      Width = 46
-      Height = 13
-      Caption = 'LO offset:'
     end
     object rbRig1: TRadioButton
       Left = 343
@@ -237,20 +228,64 @@ object Form1: TForm1
       TabOrder = 1
       OnClick = rbRig2Click
     end
-    object spinLOOffset: TSpinEdit
-      Left = 65
-      Top = 95
-      Width = 85
-      Height = 22
-      MaxValue = 20000
-      MinValue = -20000
+    object GroupBox2: TGroupBox
+      Left = 12
+      Top = 94
+      Width = 427
+      Height = 46
+      Caption = 'CWSkimmer control: '
       TabOrder = 2
-      Value = -700
+      object Label15: TLabel
+        Left = 10
+        Top = 22
+        Width = 46
+        Height = 13
+        Caption = 'LO offset:'
+      end
+      object spinLOOffset: TSpinEdit
+        Left = 63
+        Top = 19
+        Width = 75
+        Height = 22
+        MaxValue = 20000
+        MinValue = -20000
+        TabOrder = 0
+        Value = -700
+      end
+      object chkChangeTUNE: TCheckBox
+        Left = 144
+        Top = 21
+        Width = 121
+        Height = 17
+        Caption = 'Change TUNE freq'
+        Checked = True
+        State = cbChecked
+        TabOrder = 1
+      end
+      object chkHoldLO: TCheckBox
+        Left = 262
+        Top = 21
+        Width = 97
+        Height = 17
+        Caption = 'Hold LO freq per'
+        TabOrder = 2
+        OnClick = chkHoldLOClick
+      end
+      object btnPerBandFormShow: TButton
+        Left = 365
+        Top = 18
+        Width = 55
+        Height = 25
+        Caption = 'band...'
+        Enabled = False
+        TabOrder = 3
+        OnClick = btnPerBandFormShowClick
+      end
     end
   end
   object txtCallsign: TEdit
     Left = 205
-    Top = 360
+    Top = 368
     Width = 90
     Height = 21
     MaxLength = 14
@@ -259,7 +294,7 @@ object Form1: TForm1
   end
   object txtTelnetAddress: TEdit
     Left = 8
-    Top = 361
+    Top = 369
     Width = 90
     Height = 21
     MaxLength = 14
@@ -268,7 +303,7 @@ object Form1: TForm1
   end
   object txtTelnetPort: TSpinEdit
     Left = 104
-    Top = 360
+    Top = 368
     Width = 63
     Height = 22
     MaxValue = 65535
@@ -281,14 +316,14 @@ object Form1: TForm1
     OnDataAvailable = IdTelnet1DataAvailable
     Terminal = 'dumb'
     Left = 32
-    Top = 272
+    Top = 280
   end
   object delayTuneTimer1: TTimer
     Enabled = False
     Interval = 600
     OnTimer = delayTuneTimer1Timer
     Left = 48
-    Top = 184
+    Top = 192
   end
   object TrayIcon1: TTrayIcon
     BalloonTimeout = 400
@@ -3726,23 +3761,23 @@ object Form1: TForm1
     PopupMenu = TrayPopupMenu1
     OnDblClick = TrayIcon1DblClick
     Left = 144
-    Top = 272
+    Top = 280
   end
   object ApplicationEvents1: TApplicationEvents
     OnMinimize = ApplicationEvents1Minimize
     Left = 232
-    Top = 272
+    Top = 280
   end
   object errLabelsDissapearTimer1: TTimer
     Enabled = False
     Interval = 5000
     OnTimer = errLabelsDissapearTimer1Timer
     Left = 352
-    Top = 272
+    Top = 280
   end
   object TrayPopupMenu1: TPopupMenu
     Left = 144
-    Top = 224
+    Top = 232
     object Show1: TMenuItem
       Caption = 'Show'
       Default = True

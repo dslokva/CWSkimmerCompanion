@@ -37,8 +37,6 @@ type
     txtTelnetPort: TSpinEdit;
     delayTuneTimer1: TTimer;
     Bevel2: TBevel;
-    Label15: TLabel;
-    spinLOOffset: TSpinEdit;
     TrayIcon1: TTrayIcon;
     ApplicationEvents1: TApplicationEvents;
     errLabel1: TLabel;
@@ -46,6 +44,12 @@ type
     TrayPopupMenu1: TPopupMenu;
     Show1: TMenuItem;
     Exit1: TMenuItem;
+    GroupBox2: TGroupBox;
+    spinLOOffset: TSpinEdit;
+    Label15: TLabel;
+    chkChangeTUNE: TCheckBox;
+    chkHoldLO: TCheckBox;
+    btnPerBandFormShow: TButton;
     procedure FormCreate(Sender: TObject);
     procedure btnConnectClick(Sender: TObject);
     procedure sentTelnetString (ds: String);
@@ -59,6 +63,8 @@ type
     procedure errLabelsDissapearTimer1Timer(Sender: TObject);
     procedure Exit1Click(Sender: TObject);
     procedure IdTelnet1Disconnected(Sender: TObject);
+    procedure chkHoldLOClick(Sender: TObject);
+    procedure btnPerBandFormShowClick(Sender: TObject);
   private
     procedure StatusChangeEvent(Sender: TObject; RigNumber: Integer);
     procedure ParamsChangeEvent(Sender: TObject; RigNumber, Params: Integer);
@@ -66,7 +72,7 @@ type
     procedure setTRXFrequency(freqToSet : integer);
     procedure CreateRigControl;
     procedure KillRigControl;
-    procedure SetLOFreqToSkimmer(Freq : integer);
+    procedure SetLOFreqToSkimmer(Freq : integer; useOffset : boolean);
     procedure SetTuneFreqToSkimmer(Freq : integer);
     procedure RefreshRigsParams();
     procedure FreqSetAndShow(Freq_TUNE_Str: string; Freq_TUNE_Str_ToShow: string);
@@ -80,12 +86,15 @@ var
   regExp : TRegExpr;
   ActiveRigNumber : word;
   Freq_TUNE, Old_Freq_TUNE : integer;
+  Band_TUNE, Old_Band_TUNE : integer;
   DontReactOnSkimmerClick : boolean;
-  activeRigMode : string;
+  activeRigMode, currentBANDStr : string;
 
 implementation
 
 {$R *.DFM}
+
+uses Unit2;
 
 procedure TForm1.ApplicationEvents1Minimize(Sender: TObject);
 begin
@@ -114,6 +123,9 @@ try
     WriteString('CWSCSettings', 'TelnetAddress', txtTelnetAddress.Text);
     WriteInteger('CWSCSettings', 'TelnetPort', StrToInt(txtTelnetPort.Text));
     WriteString('CWSCSettings', 'TelnetCallsign', txtCallsign.Text);
+    WriteBool('CWSCSettings', 'changeTune', chkChangeTUNE.Checked);
+    WriteBool('CWSCSettings', 'holdLO', chkHoldLO.Checked);
+
   end;
 
 finally
@@ -141,11 +153,15 @@ try
     txtTelnetPort.Value := ReadInteger('CWSCSettings', 'TelnetPort', 7300);
     txtCallsign.Text := ReadString('CWSCSettings', 'TelnetCallsign', 'XX0XXX');
     txtTelnetAddress.Text := ReadString('CWSCSettings', 'TelnetAddress', '127.0.0.1');
+    chkChangeTUNE.Checked := ReadBool('CWSCSettings', 'changeTune', true);
+    chkHoldLO.Checked := ReadBool('CWSCSettings', 'holdLO', false);
   end;
 finally
-  iniFile.Free;
+  if iniFile <> nil then
+    iniFile.Free;
 end;
-
+  Old_Freq_TUNE := 0;
+  Old_Band_TUNE := 0;
   CreateRigControl();
   RefreshRigsParams();
   RigTypeChangeEvent(nil, ActiveRigNumber);
@@ -194,13 +210,14 @@ regExp.Expression := txtCallsign.Text+'+\sde SKIMMER\s\d{4}\-\d{2}\-\d{2}\s\d{2}
 if regExp.Exec(fromDXCstr) then exit;
 
 TelnetMemo1.Lines.Add(fromDXCstr);
-
-regExp.Expression := 'SKIMMER.*:\sClicked\son\s\"(.*)\"\sat\s(.*).*$';
-if regExp.Exec(fromDXCstr) then begin
-  spotFreqStr := StringReplace(regExp.Match[2], '.', ',', [rfIgnoreCase, rfReplaceAll]);
-  spotFreq := round(StrToFloat(spotFreqStr)*1000);
-  setTRXFrequency(spotFreq);
-  DebugOutput('SetFreq: '+IntToStr(spotFreq));
+if chkChangeTUNE.Checked then begin
+  regExp.Expression := 'SKIMMER.*:\sClicked\son\s\"(.*)\"\sat\s(.*).*$';
+  if regExp.Exec(fromDXCstr) then begin
+    spotFreqStr := StringReplace(regExp.Match[2], '.', ',', [rfIgnoreCase, rfReplaceAll]);
+    spotFreq := round(StrToFloat(spotFreqStr)*1000);
+    setTRXFrequency(spotFreq);
+    DebugOutput('SetFreq: '+IntToStr(spotFreq));
+  end;
 end;
 
 regExp.Free;
@@ -222,22 +239,72 @@ begin
     end;
 End;
 
+function getBandTUNEFreq() : integer;
+begin
+currentBANDStr := '160';
+
+if (Freq_TUNE > 1810000) and (Freq_TUNE < 2000000) then
+  currentBANDStr := '160';
+
+if (Freq_TUNE > 3500000) and (Freq_TUNE < 3800000) then
+  currentBANDStr := '80';
+
+if (Freq_TUNE > 7000000) and (Freq_TUNE < 7200000) then
+  currentBANDStr := '40';
+
+if (Freq_TUNE > 10100000) and (Freq_TUNE < 10150000) then
+  currentBANDStr := '30';
+
+if (Freq_TUNE > 13999000) and (Freq_TUNE < 14351000) then
+  currentBANDStr := '20';
+
+if (Freq_TUNE > 18067000) and (Freq_TUNE < 18169000) then
+  currentBANDStr := '17';
+
+if (Freq_TUNE > 21068000) and (Freq_TUNE < 21450000) then
+  currentBANDStr := '15';
+
+if (Freq_TUNE > 24890000) and (Freq_TUNE < 24990000) then
+  currentBANDStr := '12';
+
+if (Freq_TUNE > 28000000) and (Freq_TUNE < 29700000) then
+  currentBANDStr := '10';
+
+if (Freq_TUNE > 50000000) and (Freq_TUNE < 51000000) then
+  currentBANDStr := '6';
+
+result := StrToInt(perBandForm.freqLOperBandList.Values[currentBANDStr]);
+end;
+
 procedure TForm1.ParamsChangeEvent(Sender: TObject; RigNumber,  Params: Integer);
 begin
    if OmniRig = nil then Exit;
    RefreshRigsParams();
 
-
   if DontReactOnSkimmerClick then Exit;
 
-    if (IdTelnet1.Connected) and ((OmniRig.Rig1.Status = ST_ONLINE) or (OmniRig.Rig2.Status = ST_ONLINE)) then begin
-      delayTuneTimer1.Enabled := false;
-      if (Old_Freq_TUNE <> Freq_TUNE) then begin
-        Old_Freq_TUNE := Freq_TUNE;
-        SetLOFreqToSkimmer(Freq_TUNE);
+    if (OmniRig.Rig1.Status = ST_ONLINE) or (OmniRig.Rig2.Status = ST_ONLINE) then begin
+      if IdTelnet1.Connected then begin
+        delayTuneTimer1.Enabled := false;
+
+        if chkHoldLO.Checked then begin
+          Band_TUNE := getBandTUNEFreq();
+
+          if (Old_Band_TUNE <> Band_TUNE) then begin
+            Old_Band_TUNE := Band_TUNE;
+            SetLOFreqToSkimmer(Band_TUNE, false);
+          end;
+
+        end else begin
+
+          if (Old_Freq_TUNE <> Freq_TUNE) then begin
+            Old_Freq_TUNE := Freq_TUNE;
+            SetLOFreqToSkimmer(Freq_TUNE, true)
+          end;
+
+        end;
         delayTuneTimer1.Enabled := true;
       end;
-
     end else begin
       Label10.Caption := '__';
       Label2.Caption := '__';
@@ -245,11 +312,14 @@ begin
     end;
 end;
 
-procedure TForm1.SetLOFreqToSkimmer(Freq : integer);
+procedure TForm1.SetLOFreqToSkimmer(Freq : integer; useOffset : boolean);
 var
   Freq_LO_Str : string;
 begin
-  Freq_LO_Str := (IntToStr(Freq+spinLOOffset.Value));
+  Freq_LO_Str := IntToStr(Freq);
+
+  if useOffset then
+    Freq_LO_Str := (IntToStr(Freq+spinLOOffset.Value));
 
   if IdTelnet1.Connected then begin
     sentTelnetString('SKIMMER/LO_FREQ '+ Freq_LO_Str);
@@ -411,7 +481,8 @@ procedure TForm1.delayTuneTimer1Timer(Sender: TObject);
 begin
 DontReactOnSkimmerClick := true;
 delayTuneTimer1.Enabled := false;
-SetTuneFreqToSkimmer(Freq_TUNE);
+if chkChangeTUNE.Checked then
+  SetTuneFreqToSkimmer(Freq_TUNE);
 DontReactOnSkimmerClick := false;
 end;
 
@@ -476,6 +547,18 @@ if not IdTelnet1.Connected then begin
 end;
 
 End;
+
+procedure TForm1.btnPerBandFormShowClick(Sender: TObject);
+begin
+perBandForm.Show;
+end;
+
+procedure TForm1.chkHoldLOClick(Sender: TObject);
+begin
+label15.Enabled := not chkHoldLO.Checked;
+spinLOOffset.Enabled := not chkHoldLO.Checked;
+btnPerBandFormShow.Enabled := chkHoldLO.Checked;
+end;
 
 procedure TForm1.IdTelnet1Disconnected(Sender: TObject);
 begin
