@@ -4,7 +4,7 @@ object Form1: TForm1
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'CW Skimmer Companion v 0.1'
-  ClientHeight = 402
+  ClientHeight = 429
   ClientWidth = 468
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -18,7 +18,7 @@ object Form1: TForm1
   OnCreate = FormCreate
   DesignSize = (
     468
-    402)
+    429)
   PixelsPerInch = 96
   TextHeight = 13
   object Label11: TLabel
@@ -29,33 +29,46 @@ object Form1: TForm1
     Caption = 'Telnet messages:'
   end
   object Label12: TLabel
-    Left = 205
-    Top = 349
+    Left = 291
+    Top = 346
     Width = 39
     Height = 13
     Caption = 'Callsign:'
   end
   object Label13: TLabel
     Left = 8
-    Top = 348
+    Top = 370
     Width = 65
     Height = 13
     Caption = 'Telnet server:'
   end
   object Label14: TLabel
-    Left = 104
-    Top = 348
+    Left = 8
+    Top = 397
     Width = 54
     Height = 13
     Caption = 'Telnet port:'
   end
   object Bevel2: TBevel
-    Left = 187
-    Top = 365
+    Left = 291
+    Top = 370
     Width = 12
     Height = 26
     Anchors = []
     Shape = bsLeftLine
+  end
+  object statusLabel1: TLabel
+    Left = 47
+    Top = 345
+    Width = 69
+    Height = 13
+    Caption = 'Disconnected.'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clNavy
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
   end
   object errLabel1: TLabel
     Left = 97
@@ -71,6 +84,13 @@ object Form1: TForm1
     ParentFont = False
     Visible = False
   end
+  object Label16: TLabel
+    Left = 8
+    Top = 345
+    Width = 33
+    Height = 13
+    Caption = 'Status:'
+  end
   object TelnetMemo1: TMemo
     Left = 8
     Top = 176
@@ -83,7 +103,7 @@ object Form1: TForm1
   end
   object btnConnect: TButton
     Left = 301
-    Top = 364
+    Top = 370
     Width = 159
     Height = 25
     Caption = 'Connect to CW Skimmer'
@@ -284,17 +304,17 @@ object Form1: TForm1
     end
   end
   object txtCallsign: TEdit
-    Left = 205
-    Top = 368
-    Width = 90
+    Left = 336
+    Top = 343
+    Width = 124
     Height = 21
     MaxLength = 14
     TabOrder = 3
     Text = 'UN7ZO'
   end
   object txtTelnetAddress: TEdit
-    Left = 8
-    Top = 369
+    Left = 79
+    Top = 367
     Width = 90
     Height = 21
     MaxLength = 14
@@ -302,8 +322,8 @@ object Form1: TForm1
     Text = '127.0.0.1'
   end
   object txtTelnetPort: TSpinEdit
-    Left = 104
-    Top = 368
+    Left = 79
+    Top = 394
     Width = 63
     Height = 22
     MaxValue = 65535
@@ -311,7 +331,16 @@ object Form1: TForm1
     TabOrder = 5
     Value = 7300
   end
+  object chkShowTrayBaloonHint: TCheckBox
+    Left = 291
+    Top = 401
+    Width = 169
+    Height = 17
+    Caption = 'Show tray hint when minimized'
+    TabOrder = 6
+  end
   object IdTelnet1: TIdTelnet
+    OnStatus = IdTelnet1Status
     OnDisconnected = IdTelnet1Disconnected
     OnDataAvailable = IdTelnet1DataAvailable
     Terminal = 'dumb'
@@ -326,6 +355,7 @@ object Form1: TForm1
     Top = 192
   end
   object TrayIcon1: TTrayIcon
+    AnimateInterval = 200
     BalloonTimeout = 400
     Icon.Data = {
       00000100060000000000010020003D2700006600000080800000010020002808

@@ -50,6 +50,9 @@ type
     chkChangeTUNE: TCheckBox;
     chkHoldLO: TCheckBox;
     btnPerBandFormShow: TButton;
+    chkShowTrayBaloonHint: TCheckBox;
+    statusLabel1: TLabel;
+    Label16: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure btnConnectClick(Sender: TObject);
     procedure sentTelnetString (ds: String);
@@ -65,6 +68,8 @@ type
     procedure IdTelnet1Disconnected(Sender: TObject);
     procedure chkHoldLOClick(Sender: TObject);
     procedure btnPerBandFormShowClick(Sender: TObject);
+    procedure IdTelnet1Status(ASender: TObject; const AStatus: TIdStatus;
+      const AStatusText: string);
   private
     procedure StatusChangeEvent(Sender: TObject; RigNumber: Integer);
     procedure ParamsChangeEvent(Sender: TObject; RigNumber, Params: Integer);
@@ -125,7 +130,7 @@ try
     WriteString('CWSCSettings', 'TelnetCallsign', txtCallsign.Text);
     WriteBool('CWSCSettings', 'changeTune', chkChangeTUNE.Checked);
     WriteBool('CWSCSettings', 'holdLO', chkHoldLO.Checked);
-
+    WriteBool('CWSCSettings', 'showTrayHint', chkShowTrayBaloonHint.Checked);
   end;
 
 finally
@@ -155,6 +160,7 @@ try
     txtTelnetAddress.Text := ReadString('CWSCSettings', 'TelnetAddress', '127.0.0.1');
     chkChangeTUNE.Checked := ReadBool('CWSCSettings', 'changeTune', true);
     chkHoldLO.Checked := ReadBool('CWSCSettings', 'holdLO', false);
+    chkShowTrayBaloonHint.Checked := ReadBool('CWSCSettings', 'showTrayHint', true);
   end;
 finally
   if iniFile <> nil then
@@ -286,6 +292,7 @@ begin
     if (OmniRig.Rig1.Status = ST_ONLINE) or (OmniRig.Rig2.Status = ST_ONLINE) then begin
       if IdTelnet1.Connected then begin
         delayTuneTimer1.Enabled := false;
+        TrayIcon1.BalloonHint := '';
 
         if chkHoldLO.Checked then begin
           Band_TUNE := getBandTUNEFreq();
@@ -360,9 +367,10 @@ begin
   cut := Copy(Freq_TUNE_Str, Pos('.', Freq_TUNE_Str)+1, 2);
   if Length(cut) = 1 then
     Freq_TUNE_Str_ToShow := Freq_TUNE_Str_ToShow + '0';
-
-  TrayIcon1.BalloonHint := 'QSY to: ' + Freq_TUNE_Str_ToShow;
-  TrayIcon1.ShowBalloonHint;
+  if chkShowTrayBaloonHint.Checked then begin
+    TrayIcon1.BalloonHint := 'QSY to: ' + Freq_TUNE_Str_ToShow;
+    TrayIcon1.ShowBalloonHint;
+  end;
 end;
 
 procedure TForm1.RefreshRigsParams();
@@ -540,6 +548,8 @@ if not IdTelnet1.Connected then begin
       errText := StringReplace(e.ToString, #$D#$A, '. ', [rfIgnoreCase, rfReplaceAll]);
       errLabel1.Caption := 'Error: ' + errText;
       errLabel1.Visible := true;
+      statusLabel1.Caption := 'Connection error.';
+      statusLabel1.Font.Color := clRed;
       errLabelsDissapearTimer1.Enabled := true;
       btnConnect.Caption := 'Connect to CW Skimmer';
     end;
@@ -564,6 +574,20 @@ procedure TForm1.IdTelnet1Disconnected(Sender: TObject);
 begin
   btnConnect.Caption := 'Connect to CW Skimmer';
 End;
+
+procedure TForm1.IdTelnet1Status(ASender: TObject; const AStatus: TIdStatus;
+  const AStatusText: string);
+begin
+if AStatus = hsConnected then
+  statusLabel1.Font.Color := clGreen;
+
+if AStatus = hsDisconnected then begin
+  statusLabel1.Font.Color := clRed;
+  btnConnect.Caption := 'Connect to CW Skimmer';
+end;
+
+statusLabel1.Caption := AStatusText;
+end;
 
 END.
 
