@@ -4,7 +4,7 @@ object Form1: TForm1
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'CW Skimmer Companion v 0.1'
-  ClientHeight = 429
+  ClientHeight = 425
   ClientWidth = 468
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -18,40 +18,40 @@ object Form1: TForm1
   OnCreate = FormCreate
   DesignSize = (
     468
-    429)
+    425)
   PixelsPerInch = 96
   TextHeight = 13
   object Label11: TLabel
     Left = 8
-    Top = 157
+    Top = 160
     Width = 83
     Height = 13
     Caption = 'Telnet messages:'
   end
   object Label12: TLabel
     Left = 291
-    Top = 346
+    Top = 349
     Width = 39
     Height = 13
     Caption = 'Callsign:'
   end
   object Label13: TLabel
     Left = 8
-    Top = 370
+    Top = 373
     Width = 65
     Height = 13
     Caption = 'Telnet server:'
   end
   object Label14: TLabel
     Left = 8
-    Top = 397
+    Top = 400
     Width = 54
     Height = 13
     Caption = 'Telnet port:'
   end
   object Bevel2: TBevel
     Left = 291
-    Top = 370
+    Top = 372
     Width = 12
     Height = 26
     Anchors = []
@@ -59,7 +59,7 @@ object Form1: TForm1
   end
   object statusLabel1: TLabel
     Left = 47
-    Top = 345
+    Top = 348
     Width = 69
     Height = 13
     Caption = 'Disconnected.'
@@ -72,7 +72,7 @@ object Form1: TForm1
   end
   object errLabel1: TLabel
     Left = 97
-    Top = 157
+    Top = 160
     Width = 184
     Height = 13
     Caption = 'Error while connecting to CW Skimmer!'
@@ -86,14 +86,14 @@ object Form1: TForm1
   end
   object Label16: TLabel
     Left = 8
-    Top = 345
+    Top = 348
     Width = 33
     Height = 13
     Caption = 'Status:'
   end
   object TelnetMemo1: TMemo
     Left = 8
-    Top = 176
+    Top = 180
     Width = 452
     Height = 163
     Lines.Strings = (
@@ -103,7 +103,7 @@ object Form1: TForm1
   end
   object btnConnect: TButton
     Left = 301
-    Top = 370
+    Top = 373
     Width = 159
     Height = 25
     Caption = 'Connect to CW Skimmer'
@@ -112,14 +112,14 @@ object Form1: TForm1
   end
   object GroupBox1: TGroupBox
     Left = 8
-    Top = 8
+    Top = 9
     Width = 452
-    Height = 145
+    Height = 147
     Caption = 'RIG #1'
     TabOrder = 2
     DesignSize = (
       452
-      145)
+      147)
     object Label1: TLabel
       Left = 228
       Top = 39
@@ -222,11 +222,12 @@ object Form1: TForm1
     end
     object Bevel1: TBevel
       Left = 16
-      Top = 76
+      Top = 77
       Width = 418
       Height = 12
       Anchors = []
       Shape = bsBottomLine
+      ExplicitTop = 76
     end
     object rbRig1: TRadioButton
       Left = 343
@@ -293,7 +294,7 @@ object Form1: TForm1
       end
       object btnPerBandFormShow: TButton
         Left = 365
-        Top = 18
+        Top = 17
         Width = 55
         Height = 25
         Caption = 'band...'
@@ -305,7 +306,7 @@ object Form1: TForm1
   end
   object txtCallsign: TEdit
     Left = 336
-    Top = 343
+    Top = 346
     Width = 124
     Height = 21
     MaxLength = 14
@@ -314,8 +315,8 @@ object Form1: TForm1
   end
   object txtTelnetAddress: TEdit
     Left = 79
-    Top = 367
-    Width = 90
+    Top = 370
+    Width = 79
     Height = 21
     MaxLength = 14
     TabOrder = 4
@@ -323,8 +324,8 @@ object Form1: TForm1
   end
   object txtTelnetPort: TSpinEdit
     Left = 79
-    Top = 394
-    Width = 63
+    Top = 397
+    Width = 79
     Height = 22
     MaxValue = 65535
     MinValue = 23
@@ -333,7 +334,7 @@ object Form1: TForm1
   end
   object chkShowTrayBaloonHint: TCheckBox
     Left = 291
-    Top = 401
+    Top = 404
     Width = 169
     Height = 17
     Caption = 'Show tray hint when minimized'
@@ -345,18 +346,19 @@ object Form1: TForm1
     OnDataAvailable = IdTelnet1DataAvailable
     Terminal = 'dumb'
     Left = 32
-    Top = 280
+    Top = 283
   end
   object delayTuneTimer1: TTimer
     Enabled = False
     Interval = 600
     OnTimer = delayTuneTimer1Timer
     Left = 48
-    Top = 192
+    Top = 195
   end
   object TrayIcon1: TTrayIcon
     AnimateInterval = 200
     BalloonTimeout = 400
+    BalloonFlags = bfInfo
     Icon.Data = {
       00000100060000000000010020003D2700006600000080800000010020002808
       0100A3270000404000000100200028420000CB2F01003030000001002000A825
@@ -3791,23 +3793,23 @@ object Form1: TForm1
     PopupMenu = TrayPopupMenu1
     OnDblClick = TrayIcon1DblClick
     Left = 144
-    Top = 280
+    Top = 283
   end
   object ApplicationEvents1: TApplicationEvents
     OnMinimize = ApplicationEvents1Minimize
     Left = 232
-    Top = 280
+    Top = 283
   end
   object errLabelsDissapearTimer1: TTimer
     Enabled = False
     Interval = 5000
     OnTimer = errLabelsDissapearTimer1Timer
     Left = 352
-    Top = 280
+    Top = 283
   end
   object TrayPopupMenu1: TPopupMenu
     Left = 144
-    Top = 232
+    Top = 235
     object Show1: TMenuItem
       Caption = 'Show'
       Default = True

@@ -109,7 +109,7 @@ begin
   TrayIcon1.BalloonHint := 'PSE double click to restore';
 
   TrayIcon1.Visible := True;
-  TrayIcon1.Animate := True;
+  TrayIcon1.Animate := False;
   TrayIcon1.ShowBalloonHint;
 end;
 
@@ -119,6 +119,8 @@ end;
 procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   iniFile : TIniFile;
+  logFolder, dtString : string;
+
 begin
 iniFile := TIniFile.Create(ChangeFileExt(Application.ExeName,'.ini')) ;
 try
@@ -133,9 +135,25 @@ try
     WriteBool('CWSCSettings', 'showTrayHint', chkShowTrayBaloonHint.Checked);
   end;
 
+  if TelnetMemo1.Lines.Count > 0 then begin
+    logFolder := ExtractFileDir(Application.ExeName)+'//CWSCLog';
+    if not DirectoryExists(logFolder) then
+      CreateDir(logFolder);
+
+    dtString := formatdatetime('yyyy-mm-dd-HH-MM-ss', now);
+    TelnetMemo1.Lines.SaveToFile(logFolder + '//CWSC-'+dtString+'.log');
+  end;
+
 finally
   iniFile.Free;
 end;
+
+  try
+    sentTelnetString('BYE');
+  except
+  end;
+
+sleep(100);
 
 end;
 
@@ -300,17 +318,19 @@ begin
           if (Old_Band_TUNE <> Band_TUNE) then begin
             Old_Band_TUNE := Band_TUNE;
             SetLOFreqToSkimmer(Band_TUNE, false);
+            delayTuneTimer1.Enabled := true;
           end;
 
         end else begin
 
           if (Old_Freq_TUNE <> Freq_TUNE) then begin
             Old_Freq_TUNE := Freq_TUNE;
-            SetLOFreqToSkimmer(Freq_TUNE, true)
+            SetLOFreqToSkimmer(Freq_TUNE, true);
+            delayTuneTimer1.Enabled := true;
           end;
 
         end;
-        delayTuneTimer1.Enabled := true;
+
       end;
     end else begin
       Label10.Caption := '__';
@@ -578,15 +598,20 @@ End;
 procedure TForm1.IdTelnet1Status(ASender: TObject; const AStatus: TIdStatus;
   const AStatusText: string);
 begin
-if AStatus = hsConnected then
-  statusLabel1.Font.Color := clGreen;
+//this check needed when we click exit in tray icon
+if Form1.Visible then begin
 
-if AStatus = hsDisconnected then begin
-  statusLabel1.Font.Color := clRed;
-  btnConnect.Caption := 'Connect to CW Skimmer';
+  if AStatus = hsConnected then
+    statusLabel1.Font.Color := clGreen;
+
+  if AStatus = hsDisconnected then begin
+    statusLabel1.Font.Color := clRed;
+    btnConnect.Caption := 'Connect to CW Skimmer';
+  end;
+
+  statusLabel1.Caption := AStatusText;
 end;
 
-statusLabel1.Caption := AStatusText;
 end;
 
 END.
