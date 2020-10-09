@@ -7,12 +7,11 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, inifiles, Vcl.Samples.Spin,
   Vcl.ActnMan, Vcl.ActnColorMaps, Vcl.ComCtrls, Vcl.Buttons, RegExpr, OmniRig_TLB,
   IdTelnet, IdGlobal, IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient,
-  Vcl.AppEvnts, Vcl.Menus;
+  Vcl.AppEvnts, Vcl.Menus, Vcl.WinXCtrls;
 
 type
   TForm1 = class(TForm)
     TelnetMemo1: TMemo;
-    btnConnect: TButton;
     Label10: TLabel;
     GroupBox1: TGroupBox;
     Label1: TLabel;
@@ -29,14 +28,7 @@ type
     rbRig2: TRadioButton;
     Bevel1: TBevel;
     IdTelnet1: TIdTelnet;
-    txtCallsign: TEdit;
-    Label12: TLabel;
-    txtTelnetAddress: TEdit;
-    Label13: TLabel;
-    Label14: TLabel;
-    txtTelnetPort: TSpinEdit;
     delayTuneTimer1: TTimer;
-    Bevel2: TBevel;
     TrayIcon1: TTrayIcon;
     ApplicationEvents1: TApplicationEvents;
     errLabel1: TLabel;
@@ -50,9 +42,19 @@ type
     chkChangeTUNE: TCheckBox;
     chkHoldLO: TCheckBox;
     btnPerBandFormShow: TButton;
-    chkShowTrayBaloonHint: TCheckBox;
+    Panel1: TPanel;
+    Label13: TLabel;
+    Label14: TLabel;
     statusLabel1: TLabel;
     Label16: TLabel;
+    txtTelnetAddress: TEdit;
+    txtTelnetPort: TSpinEdit;
+    Panel2: TPanel;
+    txtCallsign: TEdit;
+    Label12: TLabel;
+    btnConnect: TButton;
+    chkShowTrayBaloonHint: TCheckBox;
+    Bevel2: TBevel;
     procedure FormCreate(Sender: TObject);
     procedure btnConnectClick(Sender: TObject);
     procedure sentTelnetString (ds: String);
@@ -267,34 +269,34 @@ function getBandTUNEFreq() : integer;
 begin
 currentBANDStr := '160';
 
-if (Freq_TUNE > 1810000) and (Freq_TUNE < 2000000) then
+if (Freq_TUNE >= 1810000) and (Freq_TUNE <= 2000000) then
   currentBANDStr := '160';
 
-if (Freq_TUNE > 3500000) and (Freq_TUNE < 3800000) then
+if (Freq_TUNE >= 3500000) and (Freq_TUNE <= 3800000) then
   currentBANDStr := '80';
 
-if (Freq_TUNE > 7000000) and (Freq_TUNE < 7200000) then
+if (Freq_TUNE >= 7000000) and (Freq_TUNE <= 7200000) then
   currentBANDStr := '40';
 
-if (Freq_TUNE > 10100000) and (Freq_TUNE < 10150000) then
+if (Freq_TUNE >= 10100000) and (Freq_TUNE <= 10150000) then
   currentBANDStr := '30';
 
-if (Freq_TUNE > 13999000) and (Freq_TUNE < 14351000) then
+if (Freq_TUNE >= 13999000) and (Freq_TUNE <= 14351000) then
   currentBANDStr := '20';
 
-if (Freq_TUNE > 18067000) and (Freq_TUNE < 18169000) then
+if (Freq_TUNE >= 18067000) and (Freq_TUNE <= 18169000) then
   currentBANDStr := '17';
 
-if (Freq_TUNE > 21068000) and (Freq_TUNE < 21450000) then
+if (Freq_TUNE >= 21000000) and (Freq_TUNE <= 21450000) then
   currentBANDStr := '15';
 
-if (Freq_TUNE > 24890000) and (Freq_TUNE < 24990000) then
+if (Freq_TUNE >= 24890000) and (Freq_TUNE <= 24990000) then
   currentBANDStr := '12';
 
-if (Freq_TUNE > 28000000) and (Freq_TUNE < 29700000) then
+if (Freq_TUNE >= 28000000) and (Freq_TUNE <= 29700000) then
   currentBANDStr := '10';
 
-if (Freq_TUNE > 50000000) and (Freq_TUNE < 51000000) then
+if (Freq_TUNE >= 50000000) and (Freq_TUNE <= 52000000) then
   currentBANDStr := '6';
 
 result := StrToInt(perBandForm.freqLOperBandList.Values[currentBANDStr]);
@@ -588,6 +590,7 @@ begin
 label15.Enabled := not chkHoldLO.Checked;
 spinLOOffset.Enabled := not chkHoldLO.Checked;
 btnPerBandFormShow.Enabled := chkHoldLO.Checked;
+Old_Band_TUNE := 0;
 end;
 
 procedure TForm1.IdTelnet1Disconnected(Sender: TObject);
