@@ -4,8 +4,8 @@ object Form1: TForm1
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'CW Skimmer Companion v 0.1'
-  ClientHeight = 468
-  ClientWidth = 448
+  ClientHeight = 466
+  ClientWidth = 444
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -52,15 +52,13 @@ object Form1: TForm1
   object GroupBox1: TGroupBox
     Left = 0
     Top = 0
-    Width = 448
+    Width = 444
     Height = 177
     Align = alTop
     Caption = 'RIG #1'
     TabOrder = 1
-    ExplicitTop = -1
-    ExplicitWidth = 468
     DesignSize = (
-      448
+      444
       177)
     object Label1: TLabel
       Left = 228
@@ -163,12 +161,13 @@ object Form1: TForm1
       ParentFont = False
     end
     object Bevel1: TBevel
-      Left = 12
+      Left = 10
       Top = 75
       Width = 418
       Height = 12
       Anchors = []
       Shape = bsBottomLine
+      ExplicitLeft = 12
     end
     object rbRig1: TRadioButton
       Left = 343
@@ -238,7 +237,7 @@ object Form1: TForm1
         Top = 41
         Width = 70
         Height = 25
-        Caption = 'band plan'
+        Caption = 'Band plan ...'
         Enabled = False
         TabOrder = 3
         OnClick = btnPerBandFormShowClick
@@ -247,14 +246,12 @@ object Form1: TForm1
   end
   object Panel1: TPanel
     Left = 0
-    Top = 379
-    Width = 448
+    Top = 377
+    Width = 444
     Height = 89
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitTop = 353
-    ExplicitWidth = 467
     object Label13: TLabel
       Left = 8
       Top = 33
@@ -309,14 +306,13 @@ object Form1: TForm1
       Value = 7300
     end
     object Panel2: TPanel
-      Left = 180
+      Left = 176
       Top = 0
       Width = 268
       Height = 89
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 2
-      ExplicitLeft = 199
       DesignSize = (
         268
         89)
@@ -328,13 +324,23 @@ object Form1: TForm1
         Caption = 'Callsign:'
       end
       object Bevel2: TBevel
-        Left = 91
-        Top = 30
-        Width = 12
+        Left = 103
+        Top = 31
+        Width = 9
         Height = 26
         Anchors = []
         Shape = bsLeftLine
-        ExplicitTop = 31
+      end
+      object Bevel3: TBevel
+        Left = 0
+        Top = 0
+        Width = 9
+        Height = 89
+        Align = alLeft
+        Shape = bsLeftLine
+        ExplicitLeft = 2
+        ExplicitTop = 47
+        ExplicitHeight = 26
       end
       object txtCallsign: TEdit
         Left = 136
@@ -346,21 +352,35 @@ object Form1: TForm1
         Text = 'UN7ZO'
       end
       object btnConnect: TButton
-        Left = 101
+        Left = 112
         Top = 32
-        Width = 159
+        Width = 148
         Height = 25
         Caption = 'Connect to CW Skimmer'
         TabOrder = 1
         OnClick = btnConnectClick
       end
       object chkShowTrayBaloonHint: TCheckBox
-        Left = 91
+        Left = 15
         Top = 63
         Width = 169
         Height = 17
         Caption = 'Show tray hint when minimized'
         TabOrder = 2
+      end
+      object btnStartSkimmer: TButton
+        Left = 16
+        Top = 32
+        Width = 79
+        Height = 25
+        Hint = 
+          'Firts time will ask for an exe file of CWSkimmer app and then st' +
+          'art it.'
+        Caption = 'Start Skimmer'
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 3
+        OnClick = btnStartSkimmerClick
       end
     end
   end
@@ -3843,5 +3863,10 @@ object Form1: TForm1
       Caption = 'Exit'
       OnClick = Exit1Click
     end
+  end
+  object selectSkmExeFileDialog: TOpenDialog
+    Filter = 'Executable file|*.exe'
+    Left = 240
+    Top = 240
   end
 end

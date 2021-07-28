@@ -7,7 +7,8 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, inifiles, Vcl.Samples.Spin,
   Vcl.ActnMan, Vcl.ActnColorMaps, Vcl.ComCtrls, Vcl.Buttons, RegExpr, OmniRig_TLB,
   IdTelnet, IdGlobal, IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient,
-  Vcl.AppEvnts, Vcl.Menus, Vcl.WinXCtrls;
+  Vcl.AppEvnts, Vcl.Menus, Vcl.WinXCtrls, ActiveX, ShellApi, SynEdit, ovcbase,
+  ovcclock, ovceditf, ovcedpop, ovcedsld, ovceditu, ovcedit;
 
 type
   TForm1 = class(TForm)
@@ -55,6 +56,9 @@ type
     btnConnect: TButton;
     chkShowTrayBaloonHint: TCheckBox;
     Bevel2: TBevel;
+    btnStartSkimmer: TButton;
+    selectSkmExeFileDialog: TOpenDialog;
+    Bevel3: TBevel;
     procedure FormCreate(Sender: TObject);
     procedure btnConnectClick(Sender: TObject);
     procedure sentTelnetString (ds: String);
@@ -72,6 +76,7 @@ type
     procedure btnPerBandFormShowClick(Sender: TObject);
     procedure IdTelnet1Status(ASender: TObject; const AStatus: TIdStatus;
       const AStatusText: string);
+    procedure btnStartSkimmerClick(Sender: TObject);
   private
     procedure StatusChangeEvent(Sender: TObject; RigNumber: Integer);
     procedure ParamsChangeEvent(Sender: TObject; RigNumber, Params: Integer);
@@ -96,6 +101,7 @@ var
   Band_TUNE, Old_Band_TUNE : integer;
   DontReactOnSkimmerClick : boolean;
   activeRigMode, currentBANDStr : string;
+  CW_Skimmer_Exe_Path : string;
 
 implementation
 
@@ -132,6 +138,7 @@ try
     WriteString('CWSCSettings', 'TelnetAddress', txtTelnetAddress.Text);
     WriteInteger('CWSCSettings', 'TelnetPort', StrToInt(txtTelnetPort.Text));
     WriteString('CWSCSettings', 'TelnetCallsign', txtCallsign.Text);
+    WriteString('CWSCSettings', 'CWSCExePath', CW_Skimmer_Exe_Path);
     WriteBool('CWSCSettings', 'changeTune', chkChangeTUNE.Checked);
     WriteBool('CWSCSettings', 'holdLO', chkHoldLO.Checked);
     WriteBool('CWSCSettings', 'showTrayHint', chkShowTrayBaloonHint.Checked);
@@ -178,6 +185,7 @@ try
     txtTelnetPort.Value := ReadInteger('CWSCSettings', 'TelnetPort', 7300);
     txtCallsign.Text := ReadString('CWSCSettings', 'TelnetCallsign', 'XX0XXX');
     txtTelnetAddress.Text := ReadString('CWSCSettings', 'TelnetAddress', '127.0.0.1');
+    CW_Skimmer_Exe_Path := ReadString('CWSCSettings', 'CWSCExePath', '');
     chkChangeTUNE.Checked := ReadBool('CWSCSettings', 'changeTune', true);
     chkHoldLO.Checked := ReadBool('CWSCSettings', 'holdLO', false);
     chkShowTrayBaloonHint.Checked := ReadBool('CWSCSettings', 'showTrayHint', true);
@@ -583,6 +591,43 @@ End;
 procedure TForm1.btnPerBandFormShowClick(Sender: TObject);
 begin
 perBandForm.Show;
+end;
+
+procedure ShellExec(const AFile: String; const AVerb: String = '');
+var
+  ExecInfo: TShellExecuteInfo;
+  NeedUninitialize: Boolean;
+begin
+  Assert(AFile <> '');
+  NeedUninitialize := SUCCEEDED(CoInitializeEx(nil, COINIT_APARTMENTTHREADED or COINIT_DISABLE_OLE1DDE));
+  try
+    FillChar(ExecInfo, SizeOf(ExecInfo), 0);
+    ExecInfo.cbSize := SizeOf(ExecInfo);
+
+    ExecInfo.lpVerb := Pointer(AVerb);
+    ExecInfo.lpFile := PChar(AFile);
+    ExecInfo.fMask := SEE_MASK_NOASYNC or SEE_MASK_FLAG_NO_UI;
+    {$IFDEF UNICODE}
+    ExecInfo.fMask := ExecInfo.fMask or SEE_MASK_UNICODE;
+    {$ENDIF}
+    ExecInfo.nShow := SW_SHOWNORMAL;
+
+    {$WARN SYMBOL_PLATFORM OFF}
+    Win32Check(ShellExecuteEx(@ExecInfo));
+    {$WARN SYMBOL_PLATFORM ON}
+  finally
+    if NeedUninitialize then
+      CoUninitialize;
+  end;
+end;
+
+procedure TForm1.btnStartSkimmerClick(Sender: TObject);
+begin
+if (CW_Skimmer_Exe_Path = '') then
+  if selectSkmExeFileDialog.Execute then
+    CW_Skimmer_Exe_Path := selectSkmExeFileDialog.FileName;
+    ShellExec(CW_Skimmer_Exe_Path);
+
 end;
 
 procedure TForm1.chkHoldLOClick(Sender: TObject);
