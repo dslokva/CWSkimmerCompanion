@@ -24,10 +24,6 @@ object perBandForm: TperBandForm
     Height = 263
     Align = alClient
     TabOrder = 0
-    ExplicitLeft = 56
-    ExplicitTop = 192
-    ExplicitWidth = 185
-    ExplicitHeight = 41
     object kvgBandLOValues: TValueListEditor
       Left = 1
       Top = 1
@@ -43,8 +39,6 @@ object perBandForm: TperBandForm
         'Band'
         'LO frequency')
       OnKeyPress = kvgBandLOValuesKeyPress
-      ExplicitLeft = 2
-      ExplicitTop = 2
       ColWidths = (
         55
         185)
@@ -57,8 +51,6 @@ object perBandForm: TperBandForm
     Height = 41
     Align = alBottom
     TabOrder = 1
-    ExplicitLeft = 1
-    ExplicitTop = 268
     object Button1: TButton
       Left = 8
       Top = 6

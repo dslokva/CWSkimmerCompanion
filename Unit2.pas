@@ -141,8 +141,8 @@ freqLOperBandList.Values['6'] := lo6;
 kvgBandLOValues.ColWidths[0] := 90;
 kvgBandLOValues.ColWidths[1] := 200;
 
-for i := 0 to kvgBandLOValues.RowCount-1 do
-  kvgBandLOValues.RowHeights[i] := 35;
+//for i := 0 to kvgBandLOValues.RowCount-1 do
+//  kvgBandLOValues.RowHeights[i] := 35;
 
 end;
 
