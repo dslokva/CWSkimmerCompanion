@@ -591,7 +591,7 @@ End;
 procedure TForm1.btnPerBandFormShowClick(Sender: TObject);
 begin
 perBandForm.Show;
-end;
+End;
 
 procedure ShellExec(const AFile: String; const AVerb: String = '');
 var
@@ -619,16 +619,18 @@ begin
     if NeedUninitialize then
       CoUninitialize;
   end;
-end;
+End;
 
 procedure TForm1.btnStartSkimmerClick(Sender: TObject);
 begin
 if (CW_Skimmer_Exe_Path = '') then
   if selectSkmExeFileDialog.Execute then
     CW_Skimmer_Exe_Path := selectSkmExeFileDialog.FileName;
-    ShellExec(CW_Skimmer_Exe_Path);
 
-end;
+if (CW_Skimmer_Exe_Path <> '') then
+  ShellExec(CW_Skimmer_Exe_Path);
+
+End;
 
 procedure TForm1.chkHoldLOClick(Sender: TObject);
 begin
@@ -636,7 +638,7 @@ label15.Enabled := not chkHoldLO.Checked;
 spinLOOffset.Enabled := not chkHoldLO.Checked;
 btnPerBandFormShow.Enabled := chkHoldLO.Checked;
 Old_Band_TUNE := 0;
-end;
+End;
 
 procedure TForm1.IdTelnet1Disconnected(Sender: TObject);
 begin
