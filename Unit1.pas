@@ -7,8 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, inifiles, Vcl.Samples.Spin,
   Vcl.ActnMan, Vcl.ActnColorMaps, Vcl.ComCtrls, Vcl.Buttons, RegExpr, OmniRig_TLB,
   IdTelnet, IdGlobal, IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient,
-  Vcl.AppEvnts, Vcl.Menus, Vcl.WinXCtrls, ActiveX, ShellApi, SynEdit, ovcbase,
-  ovcclock, ovceditf, ovcedpop, ovcedsld, ovceditu, ovcedit;
+  Vcl.AppEvnts, Vcl.Menus, Vcl.WinXCtrls, ActiveX, ShellApi;
 
 type
   TForm1 = class(TForm)

@@ -40,8 +40,8 @@ object Form1: TForm1
     Visible = False
   end
   object TelnetMemo1: TMemo
-    Left = 5
-    Top = 206
+    Left = 1
+    Top = 205
     Width = 435
     Height = 163
     Lines.Strings = (
@@ -57,6 +57,7 @@ object Form1: TForm1
     Align = alTop
     Caption = 'RIG #1'
     TabOrder = 1
+    ExplicitTop = 3
     DesignSize = (
       444
       177)

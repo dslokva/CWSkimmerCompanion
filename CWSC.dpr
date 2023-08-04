@@ -3,9 +3,9 @@ program CWSC;
 uses
   Vcl.Forms,
   Unit1 in 'Unit1.pas' {Form1},
-  OmniRig_TLB in '..\..\20.0\Imports\OmniRig_TLB.pas',
   RegExpr in 'RegExpr.pas',
-  Unit2 in 'Unit2.pas' {perBandForm};
+  Unit2 in 'Unit2.pas' {perBandForm},
+  OmniRig_TLB in 'C:\Users\Марина\Documents\Embarcadero\Studio\21.0\Imports\OmniRig_TLB.pas';
 
 {$R *.res}
 

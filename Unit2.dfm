@@ -52,8 +52,8 @@ object perBandForm: TperBandForm
     Align = alBottom
     TabOrder = 1
     object Button1: TButton
-      Left = 8
-      Top = 6
+      Left = 9
+      Top = 5
       Width = 75
       Height = 25
       Caption = 'Save'
